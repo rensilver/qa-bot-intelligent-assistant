@@ -1,16 +1,16 @@
 import hashlib
 from langchain_core.documents import Document
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings
 from qa_bot_intelligent_assistant.config.settings import settings
 
-def get_embedding_model():
+def get_embedding_model() -> OllamaEmbeddings:
     return OllamaEmbeddings(
         model=settings.EMBEDDING_MODEL,
         base_url=settings.OLLAMA_BASE_URL,
     )
 
-def get_vectorstore():
+def get_vectorstore() -> Chroma:
     return Chroma(
         collection_name=settings.COLLECTION_NAME,
         embedding_function=get_embedding_model(),

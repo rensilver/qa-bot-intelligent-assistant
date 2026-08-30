@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from qa_bot_intelligent_assistant.ingestion.loader import load_directory
 from qa_bot_intelligent_assistant.ingestion.text_splitter import split_documents
@@ -29,7 +29,7 @@ def ingest(source_dir: str) -> None:
         f"persisted in '{settings.CHROMA_PERSIST_DIR}'."
     )
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="PDFs ingestion to ChromaDB")
     parser.add_argument(
         "--source",

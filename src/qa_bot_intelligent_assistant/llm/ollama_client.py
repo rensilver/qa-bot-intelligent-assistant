@@ -1,7 +1,7 @@
 from langchain_ollama import ChatOllama
 from qa_bot_intelligent_assistant.config.settings import settings
 
-def get_llm():
+def get_llm() -> ChatOllama:
     return ChatOllama(
         model=settings.LLM_MODEL,
         base_url=settings.OLLAMA_BASE_URL,

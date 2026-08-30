@@ -1,7 +1,7 @@
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough
+from langchain_core.runnables import Runnable, RunnablePassthrough
 from qa_bot_intelligent_assistant.llm.ollama_client import get_llm
 from qa_bot_intelligent_assistant.retrieval.retriever import get_retriever
 
@@ -17,7 +17,7 @@ Question: {question}
 def format_docs(docs: list[Document]) -> str:
     return "\n\n".join(doc.page_content for doc in docs)
 
-def build_rag_chain():
+def build_rag_chain() -> Runnable[str, str]:
     retriever = get_retriever()
     llm = get_llm()
     prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)

@@ -1,18 +1,21 @@
 from pathlib import Path
 import gradio as gr
-from src.qa_bot_intelligent_assistant.chains.rag_chain import build_rag_chain
-from src.qa_bot_intelligent_assistant.ingestion.pdf_loader import load_pdf
-from src.qa_bot_intelligent_assistant.ingestion.text_splitter import split_documents
-from src.qa_bot_intelligent_assistant.vectorstore.chroma_store import upsert_documents
+from qa_bot_intelligent_assistant.chains.rag_chain import build_rag_chain
+from qa_bot_intelligent_assistant.ingestion.pdf_loader import load_pdf
+from qa_bot_intelligent_assistant.ingestion.text_splitter import split_documents
+from qa_bot_intelligent_assistant.vectorstore.chroma_store import upsert_documents
 
 rag_chain = build_rag_chain()
 
-def respond(message, history):
+def respond(message: str, history: list[dict[str, str]]) -> tuple[str, list[dict[str, str]]]:
     answer = rag_chain.invoke(message)
-    history = history + [(message, answer)]
+    history = history + [
+        {"role": "user", "content": message},
+        {"role": "assistant", "content": answer},
+    ]
     return "", history
 
-def index_pdfs(files, progress=gr.Progress()):
+def index_pdfs(files: list[str] | None, progress: gr.Progress = gr.Progress()) -> str:
     if not files:
         return "No file selected."
 
@@ -64,5 +67,8 @@ with gr.Blocks(title="QA Intelligent Assistant - Llama 3.2 + RAG + ChromaDB") as
 
 demo.queue()
 
-if __name__ == "__main__":
+def main() -> None:
     demo.launch(server_name="127.0.0.1", server_port=7860)
+
+if __name__ == "__main__":
+    main()
