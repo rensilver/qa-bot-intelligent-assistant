@@ -1,3 +1,4 @@
+from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
@@ -5,7 +6,7 @@ from qa_bot_intelligent_assistant.llm.ollama_client import get_llm
 from qa_bot_intelligent_assistant.retrieval.retriever import get_retriever
 
 PROMPT_TEMPLATE = """Answer the question using only the context below.
-If the answer don't fit the context, say that you don't know.
+If the answer doesn't fit the context, say that you don't know.
 
 Context:
 {context}
@@ -13,7 +14,7 @@ Context:
 Question: {question}
 """
 
-def format_docs(docs):
+def format_docs(docs: list[Document]) -> str:
     return "\n\n".join(doc.page_content for doc in docs)
 
 def build_rag_chain():
