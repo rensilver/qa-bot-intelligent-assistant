@@ -7,7 +7,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from qa_bot_intelligent_assistant.ingestion.loader import load_directory
 from qa_bot_intelligent_assistant.ingestion.text_splitter import split_documents
-from qa_bot_intelligent_assistant.vectorstore.chroma_store import get_vectorstore
+from qa_bot_intelligent_assistant.vectorstore.chroma_store import upsert_documents
 from qa_bot_intelligent_assistant.config.settings import settings
 
 def ingest(source_dir: str) -> None:
@@ -22,8 +22,7 @@ def ingest(source_dir: str) -> None:
     chunks = split_documents(documents)
     print(f"{len(chunks)} generated chunks. Indexing in ChromaDB...")
 
-    vectorstore = get_vectorstore()
-    vectorstore.add_documents(chunks)
+    upsert_documents(chunks)
 
     print(
         f"Ingestion completed. Collection '{settings.COLLECTION_NAME}'"
