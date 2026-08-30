@@ -1,5 +1,5 @@
 from langchain_ollama import ChatOllama
-from config.settings import settings
+from qa_bot_intelligent_assistant.config.settings import settings
 
 def get_llm():
     return ChatOllama(

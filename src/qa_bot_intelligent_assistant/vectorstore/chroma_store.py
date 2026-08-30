@@ -1,6 +1,6 @@
 from langchain_community.vectorstores import Chroma
 from langchain_ollama import OllamaEmbeddings
-from config.settings import settings
+from qa_bot_intelligent_assistant.config.settings import settings
 
 def get_embedding_model():
     return OllamaEmbeddings(
