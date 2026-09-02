@@ -28,7 +28,7 @@ services:
         condition: service_healthy
     environment:
       - OLLAMA_HOST=ollama:11434
-    entrypoint: ["ollama", "pull", "llama3.2:latest"]
+    entrypoint: ["ollama", "pull", "llama3.2:3b"]
     restart: "no"
 
   ollama-pull-nomic-embed-text:

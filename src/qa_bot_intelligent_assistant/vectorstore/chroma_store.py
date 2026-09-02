@@ -1,4 +1,5 @@
 import hashlib
+from pathlib import Path
 from langchain_core.documents import Document
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings
@@ -18,13 +19,37 @@ def get_vectorstore() -> Chroma:
     )
 
 def generate_chunk_id(chunk: Document) -> str:
-    source = chunk.metadata.get("source", "unknown")
+    file_hash = chunk.metadata.get("file_hash", "unknown")
     page = chunk.metadata.get("page", 0)
     content_hash = hashlib.sha256(chunk.page_content.encode("utf-8")).hexdigest()
-    return f"{source}:{page}:{content_hash}"
+    return f"{file_hash}:{page}:{content_hash}"
+
+def is_file_indexed(file_hash: str) -> bool:
+    vectorstore = get_vectorstore()
+    result = vectorstore.get(where={"file_hash": file_hash}, limit=1)
+    return len(result.get("ids", [])) > 0
 
 def upsert_documents(chunks: list[Document]) -> int:
     vectorstore = get_vectorstore()
     ids = [generate_chunk_id(chunk) for chunk in chunks]
     vectorstore.add_documents(chunks, ids=ids)
     return len(chunks)
+
+def list_indexed_files() -> list[tuple[str, str]]:
+    vectorstore = get_vectorstore()
+    result = vectorstore.get(include=["metadatas"])
+    seen = set()
+    files = []
+    for metadata in result.get("metadatas", []):
+        file_hash = metadata.get("file_hash")
+        if not file_hash or file_hash in seen:
+            continue
+        seen.add(file_hash)
+        source = metadata.get("source")
+        name = Path(source).name if source else file_hash
+        files.append((file_hash, name))
+    return files
+
+def delete_file(file_hash: str) -> None:
+    vectorstore = get_vectorstore()
+    vectorstore.delete(where={"file_hash": file_hash})
