@@ -7,7 +7,8 @@ from qa_bot_intelligent_assistant.ingestion.pdf_loader import load_pdf, load_pdf
 def test_load_pdf_uses_pypdf_loader():
     fake_docs = [Document(page_content="page 1", metadata={"page": 0})]
 
-    with patch("qa_bot_intelligent_assistant.ingestion.pdf_loader.PyPDFLoader") as mock_loader_cls:
+    with patch("qa_bot_intelligent_assistant.ingestion.pdf_loader.PyPDFLoader") as mock_loader_cls, \
+         patch("qa_bot_intelligent_assistant.ingestion.pdf_loader.compute_file_hash", return_value="fakehash"):
         mock_loader_cls.return_value.load.return_value = fake_docs
 
         result = load_pdf("some/file.pdf")
