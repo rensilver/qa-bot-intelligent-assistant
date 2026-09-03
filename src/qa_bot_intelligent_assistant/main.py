@@ -1,5 +1,6 @@
 from pathlib import Path
 import gradio as gr
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from qa_bot_intelligent_assistant.chains.rag_chain import build_rag_chain
 from qa_bot_intelligent_assistant.ingestion.pdf_loader import load_pdf, compute_file_hash
 from qa_bot_intelligent_assistant.ingestion.text_splitter import split_documents
@@ -8,8 +9,14 @@ from qa_bot_intelligent_assistant.ui.theme import THEME, CSS
 
 rag_chain = build_rag_chain()
 
+def to_chat_history(history: list[dict[str, str]]) -> list[BaseMessage]:
+    return [
+        HumanMessage(turn["content"]) if turn["role"] == "user" else AIMessage(turn["content"])
+        for turn in history
+    ]
+
 def respond(message: str, history: list[dict[str, str]]) -> tuple[str, list[dict[str, str]]]:
-    answer = rag_chain.invoke(message)
+    answer = rag_chain.invoke({"question": message, "chat_history": to_chat_history(history)})
     history = history + [
         {"role": "user", "content": message},
         {"role": "assistant", "content": answer},
