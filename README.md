@@ -7,6 +7,7 @@ A local, privacy-friendly Retrieval-Augmented Generation (RAG) chatbot that answ
 - **PDF ingestion** — load one or more PDF files and split them into overlapping text chunks for indexing.
 - **Vector search** — chunks are embedded and stored in [ChromaDB](https://www.trychroma.com/) for semantic similarity search.
 - **RAG pipeline** — retrieved chunks are injected into a prompt so the LLM answers strictly from the indexed context (and admits when it doesn't know).
+- **Conversation memory** — follow-up questions are condensed into standalone queries using the chat history before retrieval, so the bot understands context from earlier turns.
 - **Local LLM & embeddings** — powered by [Ollama](https://ollama.com/) (default: `llama3.2` for generation, `nomic-embed-text` for embeddings). No external API calls, no data leaves your machine.
 - **Web UI** — a [Gradio](https://www.gradio.app/) chat interface with drag-and-drop PDF upload and indexing progress feedback.
 - **CLI ingestion script** — batch-index a whole directory of PDFs without opening the UI.
@@ -30,10 +31,10 @@ A local, privacy-friendly Retrieval-Augmented Generation (RAG) chatbot that answ
 ```
 PDF files ──▶ loader ──▶ text splitter ──▶ embeddings ──▶ ChromaDB
                                                               │
-User question ──▶ retriever ◀────────────────────────────────┘
-                     │
-                     ▼
-              prompt + context ──▶ Ollama LLM ──▶ answer
+User question + chat history ──▶ condense (if follow-up) ──▶ retriever ◀───┘
+                                                                 │
+                                                                 ▼
+                                          prompt + context + chat history ──▶ Ollama LLM ──▶ answer
 ```
 
 Project layout:
