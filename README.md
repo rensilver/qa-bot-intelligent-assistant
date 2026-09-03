@@ -42,6 +42,7 @@ Project layout:
 src/qa_bot_intelligent_assistant/
 ├── main.py                # Gradio app entry point
 ├── config/settings.py      # Environment-based settings
+├── ui/                     # Gradio ui theme
 ├── ingestion/               # PDF loading and text splitting
 ├── vectorstore/             # ChromaDB integration
 ├── retrieval/                # Retriever configuration
